@@ -1,23 +1,25 @@
-### Pakckages
-library(ggplot2)
-library(cowplot)
-
 ### Example data
-ChickWeight
+head(ChickWeight)
 summary(ChickWeight)
 
+library(ggplot2)
 # Number of individuals in treatment groups at the beginning and at the end
 ggplot(data=ChickWeight) + geom_bar(aes(x=Diet))
+ggplot(data=ChickWeight) + geom_bar(aes(x=Diet)) + cowplot::theme_cowplot()
 
 ggplot(data=ChickWeight[ChickWeight$Time%in%c(0,21),]) + geom_bar(aes(x=Diet, group=Time, fill=factor(Time)), position='dodge') + 
 	ylab('Individuals in treatment') + 
 	scale_fill_brewer(palette='Paired', name='Day') + 
-	cowplot::theme_cowplot()
+	cowplot::theme_cowplot() + 
+	scale_y_continuous(expand=c(0,0), limits=c(0,20.5))
 
-q <- ggplot(data=ChickWeight[ChickWeight$Time%in%c(0,21),]) + geom_bar(aes(x=Diet, group=Time, fill=factor(Time)), position='dodge') + ylab('Individuals in treatment') + scale_fill_grey(name='Day')
+q <- ggplot(data=ChickWeight[ChickWeight$Time%in%c(0,21),]) + geom_bar(aes(x=Diet, group=Time, fill=factor(Time)), position='dodge') + ylab('Individuals in treatment') + scale_fill_grey(name='Day') + scale_y_continuous(expand=c(0,0), limits=c(0,20.5))
 
+library(cowplot)
 
 # Distribution of weights at the end of the experiment
+ggplot(data=ChickWeight[ChickWeight$Time==21,]) + geom_boxplot(aes(x=Diet, y=weight))
+
 qq <- ggplot(data=ChickWeight[ChickWeight$Time==21,]) + geom_boxplot(aes(x=Diet, y=weight)) + ylab('Final weight')
 
 ## plot grid
@@ -26,10 +28,11 @@ plot_grid(q,qq)
 plot_grid(q,qq, labels=letters[1:2])
 ## change position of legend in a
 plot_grid(q+theme(legend.position=c(.8,.8)),qq, labels=letters[1:2])
+q <- q+theme(legend.position=c(.8,.8))
 
 ## Save the plot
 save_plot(
-	plot_grid(q+theme(legend.position=c(.8,.8)),qq, labels=letters[1:2]),
+	plot_grid(q,qq, labels=letters[1:2]),
 	filename='~/Desktop/tst.png', base_height=4, base_width=7
 )
 
