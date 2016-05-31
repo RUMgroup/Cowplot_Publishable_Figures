@@ -3,25 +3,20 @@ head(ChickWeight)
 summary(ChickWeight)
 
 library(ggplot2)
-# Number of individuals in treatment groups at the beginning and at the end
-ggplot(data=ChickWeight) + geom_bar(aes(x=Diet))
-ggplot(data=ChickWeight) + geom_bar(aes(x=Diet)) + cowplot::theme_cowplot()
 
-ggplot(data=ChickWeight[ChickWeight$Time%in%c(0,21),]) + geom_bar(aes(x=Diet, group=Time, fill=factor(Time)), position='dodge') + 
+# Number of individuals in treatment groups at the beginning and at the first and last day of the experiment
+q <- ggplot(data=ChickWeight[ChickWeight$Time%in%c(0,21),]) + 
+	geom_bar(aes(x=Diet, group=Time, fill=factor(Time)), position='dodge') + 
 	ylab('Individuals in treatment') + 
-	scale_fill_brewer(palette='Paired', name='Day') + 
-	cowplot::theme_cowplot() + 
+	scale_fill_grey(name='Day') + 
 	scale_y_continuous(expand=c(0,0), limits=c(0,20.5))
 
-q <- ggplot(data=ChickWeight[ChickWeight$Time%in%c(0,21),]) + geom_bar(aes(x=Diet, group=Time, fill=factor(Time)), position='dodge') + ylab('Individuals in treatment') + scale_fill_grey(name='Day') + scale_y_continuous(expand=c(0,0), limits=c(0,20.5))
-
-library(cowplot)
 
 # Distribution of weights at the end of the experiment
-ggplot(data=ChickWeight[ChickWeight$Time==21,]) + geom_boxplot(aes(x=Diet, y=weight))
-
 qq <- ggplot(data=ChickWeight[ChickWeight$Time==21,]) + geom_boxplot(aes(x=Diet, y=weight)) + ylab('Final weight')
 
+
+library(cowplot)
 ## plot grid
 plot_grid(q,qq)
 ## adding labels
@@ -38,10 +33,6 @@ save_plot(
 
 
 ## Adding another plot 
-ggplot(data=ChickWeight) + geom_point(aes(x=Time, y=weight))
-
-ggplot(data=ChickWeight) + geom_point(aes(x=Time, y=weight, colour=Diet))
-
 qqq <- ggplot(data=ChickWeight) + geom_point(aes(x=Time, y=weight, colour=Diet)) + stat_smooth(aes(x=Time, y=weight, colour=Diet), method='loess')
 
 ## Plotting all three figures
